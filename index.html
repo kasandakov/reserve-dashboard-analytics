@@ -481,6 +481,7 @@ function buildModel(){
   const wbColumns = {
     article: requireColumnIndex(RAW.wbTurnover, ['Артикул продавца']),
     size: requireColumnIndex(RAW.wbTurnover, ['Размер']),
+    warehouse: requireColumnIndex(RAW.wbTurnover, ['Склад']),
     stock: requireColumnIndex(RAW.wbTurnover, ['Остатки на текущий день, шт']),
     customerReturn: requireColumnIndex(RAW.wbTurnover, ['В пути от покупателя, шт'])
   };
@@ -498,6 +499,7 @@ function buildModel(){
   };
 
   RAW.wbTurnover.rows.forEach(row => {
+    if(normalizeText(getColumn(row, wbColumns.warehouse)) !== 'СКЛАД WB') return;
     const article = getColumn(row, wbColumns.article);
     const size = getColumn(row, wbColumns.size);
     const rec = ensureRecord(map, article, size);
