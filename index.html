@@ -843,7 +843,7 @@ function renderMainTable(rows, maxTotal){
       buildHistory();
       renderHistory();
       renderDashboard();
-      document.getElementById('detailPanel')?.scrollIntoView({behavior:'smooth', block:'start'});
+      historyContent.scrollIntoView({behavior:'smooth', block:'start'});
     }));
   }, 0);
   return `<table>${head}<tbody>${body}</tbody></table>`;
