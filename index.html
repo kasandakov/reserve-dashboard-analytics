@@ -499,7 +499,7 @@ function buildModel(){
   };
 
   RAW.wbTurnover.rows.forEach(row => {
-    if(normalizeText(getColumn(row, wbColumns.warehouse)) !== 'СКЛАД WB') return;
+    if(normalizeText(getColumn(row, wbColumns.warehouse)) !== 'СКЛАД WB РФ') return;
     const article = getColumn(row, wbColumns.article);
     const size = getColumn(row, wbColumns.size);
     const rec = ensureRecord(map, article, size);
