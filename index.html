@@ -312,6 +312,49 @@ function normalizeSize(value){
   return normalizeText(value).replace(/\s+/g, '');
 }
 
+function compareSizes(a, b){
+  const left = normalizeSize(a);
+  const right = normalizeSize(b);
+  const clothingOrder = {
+    S: 0,
+    M: 1,
+    L: 2,
+    XL: 3,
+    '2XL': 4,
+    XXL: 4,
+    '3XL': 5,
+    XXXL: 5,
+    '4XL': 6,
+    XXXXL: 6,
+    '5XL': 7,
+    XXXXXL: 7
+  };
+  const leftClothing = clothingOrder[left];
+  const rightClothing = clothingOrder[right];
+  if(leftClothing !== undefined && rightClothing !== undefined){
+    return leftClothing - rightClothing;
+  }
+
+  const jeansPattern = /^(\d+(?:[.,]\d+)?)\/(\d+(?:[.,]\d+)?)$/;
+  const leftJeans = left.match(jeansPattern);
+  const rightJeans = right.match(jeansPattern);
+  if(leftJeans && rightJeans){
+    const leftWaist = Number(leftJeans[1].replace(',', '.'));
+    const rightWaist = Number(rightJeans[1].replace(',', '.'));
+    const leftLength = Number(leftJeans[2].replace(',', '.'));
+    const rightLength = Number(rightJeans[2].replace(',', '.'));
+    return (leftLength - rightLength) || (leftWaist - rightWaist);
+  }
+
+  const leftNumber = Number(left.replace(',', '.'));
+  const rightNumber = Number(right.replace(',', '.'));
+  if(Number.isFinite(leftNumber) && Number.isFinite(rightNumber)){
+    return leftNumber - rightNumber;
+  }
+
+  return left.localeCompare(right, 'ru', {numeric:true});
+}
+
 function makeKey(article, size){
   const a = normalizeText(article);
   const s = normalizeSize(size);
@@ -879,7 +922,7 @@ function renderQuality(){
 function renderArticle(article){
   const panel = document.getElementById('detailPanel');
   if(!panel) return;
-  const rows = MODEL.filter(row => row.article === article).sort((a,b) => String(a.size).localeCompare(String(b.size), 'ru', {numeric:true}));
+  const rows = MODEL.filter(row => row.article === article).sort((a,b) => compareSizes(a.size, b.size));
   if(!rows.length){
     panel.classList.remove('show');
     return;
